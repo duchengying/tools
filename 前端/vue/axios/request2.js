@@ -1,21 +1,24 @@
 /*
  * @Author: DuFeng
  * @Date: 2021-07-08 11:45:46
- * @LastEditTime: 2021-09-08 16:54:14
+ * @LastEditTime: 2021-09-09 13:32:58
  * @Description: 
- * @FilePath: \emer-front\src\service\lib\request2.js
+ * @FilePath: \tools\前端\vue\axios\request2.js
  *  
  */
-/** 
- * 重置 axios
- * @author LiQingSong
- */
+
+//状态信息
 import store from '@/store';
 import axios from 'axios';
 import {
   ajaxHeadersTokenKey
 } from '@/settings';
 
+//token 标识符
+const ajaxHeadersTokenKey='token';
+/* 
+常用 错误码
+*/
 const errorCode = [{
     code: 400,
     lable: '请求错误！'
@@ -58,24 +61,20 @@ const errorCode = [{
 const service = axios.create({
   //baseURL: process.env.VUE_APP_APIHOST, // url = api url + request url
   withCredentials: true, // 当跨域请求时发送cookie
-  timeout: 100000 // 请求超时时间,5000(单位毫秒) / 0 不做限制
+  timeout: 10000 // 请求超时时间,5000(单位毫秒) / 0 不做限制
 });
-
-// 全局设置 - post请求头
-// service.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
 
 // 请求拦截器 - 在发送请求之前
 service.interceptors.request.use(
   config => {
-
     // 如果设置了cType 说明是自定义 添加 Content-Type类型 为自定义post 做铺垫
     if (config.cType) {
       config.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
     }
-    // 请根据实际情况修改
-    if (store.getters.token) {
-      config.headers[ajaxHeadersTokenKey] = store.getters.token;
-    }
+    // 请根据实际情况修改,携带token
+    // if (store.getters.token) {
+    //   config.headers[ajaxHeadersTokenKey] = store.getters.token;
+    // }
     return config;
   },
   error => {
@@ -97,9 +96,9 @@ service.interceptors.response.use(
     const {
       status
     } = res;
-    if (status === undefined || status === '' || status == null) {
-      res.msg = '未知错误！';
-      res.status = 500;
+    // 200，返回数据
+    if(status===200){
+      return res;
     } else {
       for (let item of errorCode) {
         if (item.code === status) {
