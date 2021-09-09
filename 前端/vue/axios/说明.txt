@@ -1,0 +1,9 @@
+该工具主要作用：
+  1、简化请求。
+  2、全局错误提示，自定义提示
+  3、全局loading 加载以及自定义加载提示
+  
+  
+  条件：
+    提示插件使用element ui 的loading以及Message,使用时需要添加这个个插件
+    引用插件：element UI，Axios。
